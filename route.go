@@ -1,23 +1,27 @@
 package glapi
 
-func (app *App) Get(route string, handler Handler) {
-  addRoute(app, "GET", route, handler)
+type Route struct {
 }
 
-func (app *App) Post(route string, handler Handler) {
-  addRoute(app, "POST", route, handler)
+func (app *App) Get(route string, handler Handler) *Route {
+  return addRoute(app, "GET", route, handler)
 }
 
-func (app *App) Put(route string, handler Handler) {
-  addRoute(app, "PUT", route, handler)
+func (app *App) Post(route string, handler Handler) *Route {
+  return addRoute(app, "POST", route, handler)
 }
 
-func (app *App) Delete(route string, handler Handler) {
-  addRoute(app, "DELETE", route, handler)
+func (app *App) Put(route string, handler Handler) *Route {
+  return addRoute(app, "PUT", route, handler)
 }
 
-func addRoute(app *App, method string, route string, handler Handler) {
-  router := NewRouter(route)
+func (app *App) Delete(route string, handler Handler) *Route {
+  return addRoute(app, "DELETE", route, handler)
+}
+
+func addRoute(app *App, method string, path string, handler Handler) *Route {
+  router := NewRouter(path)
+  route := &Route{}
 
   app.Use(func(req *Request, res *Response, next func(err error)) {
 
@@ -37,4 +41,6 @@ func addRoute(app *App, method string, route string, handler Handler) {
 
     handler(req, res, next)
   })
+
+  return route
 }

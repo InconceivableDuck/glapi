@@ -45,6 +45,37 @@ app.Post("/user", func(req *glapi.Request, res *glapi.Response, next func(err er
 })
 ```
 
+### Request Body and JSON
+The BodyReader middleware can be used to read the request body into memory for easy JSON parsing using Go's built-in [JSON package](http://golang.org/pkg/encoding/json/).
+
+```go
+import(
+  "encoding/json"
+  "github.com/inconceivableduck/glapi"
+)
+
+type User struct {
+  FirstName string
+  LastName  string
+}
+
+func main() {
+  app := glapi.NewApp()
+
+  app.Use(glapi.BodyReader("application/json"))
+
+  app.Post("/user", func(req *glapi.Request, res *glapi.Response, next func(err error)) {
+    user := User{}
+    err := json.Unmarshal(req.Body, &user)
+    if err != nil {
+      next(err)
+    } else {
+      res.send("OK")
+    }
+  })
+}
+```
+
 ### Types
 
 #### glapi.Request
@@ -56,6 +87,7 @@ The Request object holds useful information about the current request.
 `Request.Query` [url.Values](http://golang.org/pkg/net/url/#Values) - Query string values.<br />
 `Request.Params` glapi.URLParams - Map of named parameters and their values.<br />
 `Request.Method` string - The request method: GET, POST, PUT, DELETE.<br />
+`Request.Body` []byte - The request's body. Populated if using the BodyReader middleware.
 
 #### glapi.Response
 The Response objects provides convenience utilities to response to the incoming request.

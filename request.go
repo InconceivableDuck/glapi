@@ -12,4 +12,5 @@ type Request struct {
   Query      url.Values
   Params     URLParams
   Method     string
+  Body       []byte
 }
