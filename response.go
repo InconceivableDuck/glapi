@@ -14,18 +14,18 @@ func (res *Response) Send(r interface{}) {
 
   switch str := r.(type) {
   case string:
-    res.SendText(str)
+    res.sendText(str)
     return
   }
 
-  res.SendJson(r)
+  res.sendJson(r)
 }
 
-func (res *Response) SendText(text string) {
+func (res *Response) sendText(text string) {
   fmt.Fprintf(res.RawResponse, text)
 }
 
-func (res *Response) SendJson(r interface{}) {
+func (res *Response) sendJson(r interface{}) {
   j, _ := json.MarshalIndent(r, "", "  ")
-  res.SendText(string(j[:]))
+  res.sendText(string(j[:]))
 }
