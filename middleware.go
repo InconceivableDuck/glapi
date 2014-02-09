@@ -33,7 +33,7 @@ func (this *Middleware) Invoke(req *Request, res *Response, app *App, nextIdx in
       // Invoke the next middleware in the list.
       app.middleware[nextIdx].Invoke(req, res, app, nextNextIdx)
     } else {
-      res.Send("Cannot get " + req.URL.Path)
+      res.Send("Cannot " + req.Method + " " + req.URL.Path)
     }
   })
 }

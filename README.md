@@ -40,12 +40,6 @@ app.Get("/user/{id}", func(req *glapi.Request, res *glapi.Response, next func(er
   res.Send("Hello " + id)
 })
 
-app.Get("/user/{id}/project/{pid}", func(req *glapi.Request, res *glapi.Response, next func(err error)) {
-  id := req.Params["id"]
-  pid := req.Params["pid"]
-  res.Send("Hello " + id + " with project " + pid)
-})
-
 app.Post("/user", func(req *glapi.Request, res *glapi.Response, next func(err error)) {
   res.Send("Posted to /user")
 })
