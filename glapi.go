@@ -1,52 +1,26 @@
 package glapi
 
 import (
-	"log"
 	"net/http"
 )
 
 func NewApp() App {
 	app := App{}
 	app.middleware = make([]Middleware, 0)
+	app.Use(Bootstrap())
 	return app
 }
 
 type App struct {
+	// All actions are defined by middleware.
+	// The request will flow through every middleware in the order
+	// they were added as long as next() continues to be called.
 	middleware []Middleware
 }
 
-type Request struct {
-	RawRequest *http.Request
-}
-
-type Handler func(req *Request, res *Response, next func(err error))
-
-type Middleware struct {
-	handler Handler
-	next    func()
-}
-
-func (mid *Middleware) Invoke(req *Request, res *Response, app *App, nextIdx int) {
-
-	mid.handler(req, res, func(err error) {
-
-		if err != nil {
-			log.Print(err)
-			return
-		}
-
-		if len(app.middleware) > nextIdx {
-			nextNextIdx := nextIdx + 1
-			app.middleware[nextIdx].Invoke(req, res, app, nextNextIdx)
-		}
-	})
-}
-
-func (app *App) Get(route string, handler Handler) {
-
-	newMid := Middleware{}
+func (app *App) Use(handler Handler) {
+	newMid := BaseMiddleware{}
 	newMid.handler = handler
-
 	app.middleware = append(app.middleware, newMid)
 }
 
@@ -56,8 +30,11 @@ func (app *App) HandleRequest(req *Request, res *Response) {
 
 func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	req := &Request{r}
-	res := &Response{w}
+	req := &Request{}
+	req.RawRequest = r
+
+	res := &Response{}
+	res.RawResponse = w
 
 	app.HandleRequest(req, res)
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Response struct {
-	RawResponseWriter http.ResponseWriter
+	RawResponse http.ResponseWriter
 }
 
 func (res *Response) Send(r interface{}) {
@@ -22,7 +22,7 @@ func (res *Response) Send(r interface{}) {
 }
 
 func (res *Response) SendText(text string) {
-	fmt.Fprintf(res.RawResponseWriter, text)
+	fmt.Fprintf(res.RawResponse, text)
 }
 
 func (res *Response) SendJson(r interface{}) {
