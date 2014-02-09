@@ -50,3 +50,20 @@ app.Post("/user", func(req *glapi.Request, res *glapi.Response, next func(err er
   res.Send("Posted to /user")
 })
 ```
+
+### Types
+
+#### glapi.Request
+The Request object holds useful information about the current request.
+
+`Request.RawRequest` [*http.Request](http://golang.org/pkg/net/http/#Request) - The raw request object return from the underlying HTTP server.<br />
+`Request.Headers` [http.Header](http://golang.org/pkg/net/http/#Header) - The request headers.<br />
+`Request.URL` glapi.URL - The URL of the request.<br />
+`Request.Query` [url.Values](http://golang.org/pkg/net/url/#Values) - Query string values.<br />
+`Request.Params` glapi.URLParams - Map of named parameters and their values.<br />
+`Request.Method` string - The request method: GET, POST, PUT, DELETE.<br />
+
+#### glapi.Response
+The Response objects provides convenience utilities to response to the incoming request.
+
+`Response.Send(r interface{})` - Sends content to the response. If the parameter is a string it is sent as plain text. If is is any other type it is [marshalled](http://golang.org/pkg/encoding/json/#MarshalIndent) and sent as JSON.
