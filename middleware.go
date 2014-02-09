@@ -6,25 +6,21 @@ import (
 
 // The main middleware interface.
 // All middlewares must implement this interface.
-type Middleware interface {
-	Invoke(req *Request, res *Response, app *App, nextIdx int)
+type Middleware struct {
+	handler Handler
+	next    func()
 }
 
 // Function definition for middleware handler functions.
 // These functions are called by a middleware's Invoke function.
 type Handler func(req *Request, res *Response, next func(err error))
 
-type BaseMiddleware struct {
-	handler Handler
-	next    func()
-}
-
 // Base middleware invoke call. Simply calls the current handler and invokes the
 // next middleware. Does not do any processing on the request.
-func (mid BaseMiddleware) Invoke(req *Request, res *Response, app *App, nextIdx int) {
+func (this *Middleware) Invoke(req *Request, res *Response, app *App, nextIdx int) {
 
 	// Call the handler. This is typically code provided by the user.
-	mid.handler(req, res, func(err error) {
+	this.handler(req, res, func(err error) {
 
 		if err != nil {
 			// TODO: look for error middleware and invoke, otherwise return a 500.

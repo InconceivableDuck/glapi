@@ -19,7 +19,7 @@ type App struct {
 }
 
 func (app *App) Use(handler Handler) {
-	newMid := BaseMiddleware{}
+	newMid := Middleware{}
 	newMid.handler = handler
 	app.middleware = append(app.middleware, newMid)
 }
