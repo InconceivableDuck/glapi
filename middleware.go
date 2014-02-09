@@ -1,14 +1,14 @@
 package glapi
 
 import (
-	"log"
+  "log"
 )
 
 // The main middleware interface.
 // All middlewares must implement this interface.
 type Middleware struct {
-	handler Handler
-	next    func()
+  handler Handler
+  next    func()
 }
 
 // Function definition for middleware handler functions.
@@ -19,21 +19,21 @@ type Handler func(req *Request, res *Response, next func(err error))
 // next middleware. Does not do any processing on the request.
 func (this *Middleware) Invoke(req *Request, res *Response, app *App, nextIdx int) {
 
-	// Call the handler. This is typically code provided by the user.
-	this.handler(req, res, func(err error) {
+  // Call the handler. This is typically code provided by the user.
+  this.handler(req, res, func(err error) {
 
-		if err != nil {
-			// TODO: look for error middleware and invoke, otherwise return a 500.
-			log.Print(err)
-			return
-		}
+    if err != nil {
+      // TODO: look for error middleware and invoke, otherwise return a 500.
+      log.Print(err)
+      return
+    }
 
-		if len(app.middleware) > nextIdx {
-			nextNextIdx := nextIdx + 1
-			// Invoke the next middleware in the list.
-			app.middleware[nextIdx].Invoke(req, res, app, nextNextIdx)
-		} else {
-			res.Send("Cannot get " + req.URL.Path)
-		}
-	})
+    if len(app.middleware) > nextIdx {
+      nextNextIdx := nextIdx + 1
+      // Invoke the next middleware in the list.
+      app.middleware[nextIdx].Invoke(req, res, app, nextNextIdx)
+    } else {
+      res.Send("Cannot get " + req.URL.Path)
+    }
+  })
 }
