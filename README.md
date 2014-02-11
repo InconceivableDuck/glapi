@@ -76,6 +76,15 @@ func main() {
 }
 ```
 
+### Errors
+
+Every middleware includes a `next` function. If `next` is ever called with an error, propagation is immediately stopped and error handlers will be invoked. By default the application will respond with a 500 and the content of the error. Custom error handlers can be added much like regular middlware.
+
+app.Error(func(req *glapi.Request, res *glapi.Response, err error, next func()) {
+  // Handle error.
+  // Call next() to continue to next error handler if needed.
+})
+
 ### Types
 
 #### glapi.Request
@@ -92,4 +101,8 @@ The Request object holds useful information about the current request.
 #### glapi.Response
 The Response objects provides convenience utilities to response to the incoming request.
 
+`Response.Headers` [http.Header](http://golang.org/pkg/net/http/#Header) - The response headers.
+
 `Response.Send(r interface{})` - Sends content to the response. If the parameter is a string it is sent as plain text. If is is any other type it is [marshalled](http://golang.org/pkg/encoding/json/#MarshalIndent) and sent as JSON.
+
+`Response.Code(code int)` - Sends the HTTP status code of the response. Defaults to 200 (OK).

@@ -1,9 +1,5 @@
 package glapi
 
-import (
-  "log"
-)
-
 // The main middleware interface.
 // All middlewares must implement this interface.
 type Middleware struct {
@@ -11,9 +7,30 @@ type Middleware struct {
   next    func()
 }
 
+type ErrorMiddleware struct {
+  handler ErrorHandler
+  next    func()
+}
+
 // Function definition for middleware handler functions.
 // These functions are called by a middleware's Invoke function.
 type Handler func(req *Request, res *Response, next func(err error))
+
+// Function definition for error middlware.
+type ErrorHandler func(req *Request, res *Response, err error, next func())
+
+// Invokes the error middlewares.
+func (this *ErrorMiddleware) Invoke(req *Request, res *Response, app *App, err error, nextIdx int) {
+
+  this.handler(req, res, err, func() {
+    if len(app.errorMiddleware) > nextIdx {
+      nextNextIdx := nextIdx + 1
+      app.errorMiddleware[nextIdx].Invoke(req, res, app, err, nextNextIdx)
+    } else {
+      app.DefaultErrorHandler(req, res, err)
+    }
+  })
+}
 
 // Base middleware invoke call. Simply calls the current handler and invokes the
 // next middleware. Does not do any processing on the request.
@@ -23,8 +40,7 @@ func (this *Middleware) Invoke(req *Request, res *Response, app *App, nextIdx in
   this.handler(req, res, func(err error) {
 
     if err != nil {
-      // TODO: look for error middleware and invoke, otherwise return a 500.
-      log.Print(err)
+      app.HandleError(req, res, err)
       return
     }
 
@@ -33,7 +49,7 @@ func (this *Middleware) Invoke(req *Request, res *Response, app *App, nextIdx in
       // Invoke the next middleware in the list.
       app.middleware[nextIdx].Invoke(req, res, app, nextNextIdx)
     } else {
-      res.Send("Cannot " + req.Method + " " + req.URL.Path)
+      app.DefaultHandler(req, res)
     }
   })
 }

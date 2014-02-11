@@ -9,6 +9,8 @@ func Bootstrap() Handler {
     req.Query = req.RawRequest.URL.Query()
     req.Method = req.RawRequest.Method
 
+    res.Headers = res.RawResponse.Header()
+
     next(nil)
   }
 }
