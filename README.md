@@ -45,8 +45,24 @@ app.Post("/user", func(req *glapi.Request, res *glapi.Response, next func(err er
 })
 ```
 
-### Request Body and JSON
-The BodyReader middleware can be used to read the request body into memory for easy JSON parsing using Go's built-in [JSON package](http://golang.org/pkg/encoding/json/).
+### BodyReader Middleware
+The BodyReader middleware makes it easy to read the body content of incoming requests into memory.
+
+```go
+app.Use(glapi.BodyReader("application/json")
+```
+
+BodyReader only reads the body if the incoming content-type matches the specified value. If you'd like to read multiple types of content, apply the middleware multiple times.
+
+```go
+app.Use(glapi.BodyReader("application/json")
+app.Use(glapi.BodyReader("text/plain")
+```
+
+BodyReader places the body contents in the `Request.Body` field.
+
+### JSON Content
+Combine the BodyReader middlware with Go's built-in [JSON package](http://golang.org/pkg/encoding/json/) for simple handling of JSON data.
 
 ```go
 import(
@@ -103,8 +119,6 @@ The Request object holds useful information about the current request.
 #### glapi.Response
 The Response objects provides convenience utilities to response to the incoming request.
 
-`Response.Headers` [http.Header](http://golang.org/pkg/net/http/#Header) - The response headers.
-
-`Response.Send(r interface{})` - Sends content to the response. If the parameter is a string it is sent as plain text. If is is any other type it is [marshalled](http://golang.org/pkg/encoding/json/#MarshalIndent) and sent as JSON.
-
-`Response.Code(code int)` - Sends the HTTP status code of the response. Defaults to 200 (OK).
+`Response.Headers` [http.Header](http://golang.org/pkg/net/http/#Header) - The response headers. <br />
+`Response.Send(r interface{})` - Sends content to the response. If the parameter is a string it is sent as plain text. If is is any other type it is [marshalled](http://golang.org/pkg/encoding/json/#MarshalIndent) and sent as JSON. <br />
+`Response.Code(code int)` - Sets the HTTP status code of the response. Defaults to 200 (OK). <br />
