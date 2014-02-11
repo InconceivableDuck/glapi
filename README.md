@@ -80,10 +80,12 @@ func main() {
 
 Every middleware includes a `next` function. If `next` is ever called with an error, propagation is immediately stopped and error handlers will be invoked. By default the application will respond with a 500 and the content of the error. Custom error handlers can be added much like regular middlware.
 
+```go
 app.Error(func(req *glapi.Request, res *glapi.Response, err error, next func()) {
   // Handle error.
   // Call next() to continue to next error handler if needed.
 })
+```
 
 ### Types
 
