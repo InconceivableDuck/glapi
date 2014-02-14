@@ -34,13 +34,13 @@ func (res *Response) Code(code int) {
 }
 
 func (res *Response) sendText(text string) {
-  res.Header.Set("content-type", "text/plain")
+  res.Headers.Set("content-type", "text/plain")
   res.RawResponse.WriteHeader(res.code)
   fmt.Fprintf(res.RawResponse, text)
 }
 
 func (res *Response) sendJson(r interface{}) {
-  res.Header.Set("content-type", "application/json")
+  res.Headers.Set("content-type", "application/json")
   res.RawResponse.WriteHeader(res.code)
   j, _ := json.MarshalIndent(r, "", "  ")
   fmt.Fprintf(res.RawResponse, string(j[:]))
