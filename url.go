@@ -29,5 +29,9 @@ type URL struct {
 
 func SplitURL(url *url.URL) []string {
   // Split the string after removing the leading slash.
-  return strings.Split(strings.TrimLeft(url.Path, "/"), "/")
+  return SplitPath(url.Path)
+}
+
+func SplitPath(path string) []string {
+  return strings.Split(strings.TrimLeft(path, "/"), "/")
 }

@@ -1,7 +1,6 @@
 package glapi
 
 import (
-  "log"
   "strings"
 )
 
@@ -26,7 +25,7 @@ func NewRouter(route string) *Router {
 }
 
 func parseRoute(route string) []URLParts {
-  parts := strings.Split(route, "/")
+  parts := SplitPath(route)
   urlParts := make([]URLParts, len(parts))
 
   for idx, part := range parts {
@@ -42,8 +41,6 @@ func parseRoute(route string) []URLParts {
       urlParts[idx].Name = name
     }
   }
-
-  log.Print(urlParts)
 
   return urlParts
 }
@@ -63,7 +60,6 @@ func (this *Router) IsMatch(url *URL) (isMatch bool, params URLParams) {
     }
 
     if this.Parts[idx].Match == part {
-      params[this.Parts[idx].Name] = part
       continue
     }
 
