@@ -1,5 +1,6 @@
 glapi
 =====
+[![Build Status](https://travis-ci.org/InconceivableDuck/glapi.png?branch=master)](https://travis-ci.org/InconceivableDuck/glapi)
 
 [Express](http://expressjs.com) inspired web application framework for Go.
 
